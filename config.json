@@ -1,0 +1,10 @@
+{
+  "monitor_amount": 2,
+  "monitor_with_game" : 1,
+  "offsets": {
+    "top": 290,
+    "bottom": 440,
+    "left": 480,
+    "right": 478
+  }
+}
