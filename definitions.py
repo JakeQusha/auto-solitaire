@@ -1,4 +1,31 @@
 import json
+from enum import Enum
+
+
+class CardType(Enum):
+    SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING, T_THING = range(9)
+
+
+class Card:
+    type: CardType
+    is_cheated: bool
+
+    def __init__(self, card_type: CardType):
+        self.type = card_type
+        self.is_cheated = False
+
+
+class Game:
+    cards: list[list[Card]]
+
+    def add_card(self, card: Card, col: int):
+        self.cards[col].append(card)
+
+    def __init__(self):
+        self.cards = [[] for _ in range(6)]
+
+    def __str__(self):
+        return '\n'.join([' '.join([str(card.type) for card in row]) for row in self.cards])
 
 
 class Config:
@@ -23,4 +50,5 @@ class Config:
         return f'offset_top: {self.offset_top}, offset_bottom: {self.offset_bottom}, offset_left: {self.offset_left}, offset_right: {self.offset_right}, monitor_amount: {self.monitor_amount}, monitor_with_game: {self.monitor_with_game}'
 
     def get_corrected_offsets(self, width, height) -> tuple[int, int, int, int]:
-        return (width / self.monitor_amount)*(self.monitor_with_game-1) + self.offset_left, self.offset_top, (width/self.monitor_amount)*self.monitor_with_game - self.offset_right, height - self.offset_bottom
+        return (width / self.monitor_amount) * (self.monitor_with_game - 1) + self.offset_left, self.offset_top, (
+                width / self.monitor_amount) * self.monitor_with_game - self.offset_right, height - self.offset_bottom
