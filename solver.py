@@ -4,9 +4,26 @@ cache = {}
 
 
 # TODO
-def get_possible_moves(game: Game) -> list[(int, int, int, int)]:
+def get_possible_moves(game: Game) -> list[(int, int, int, bool)]:
     moves = []
-
+    for i, col in enumerate(game.cards):
+        if len(col) == 0:
+            continue
+        if col[-1].is_cheated:
+            for des in range(0, 6):
+                if des != i and not game.cards[i][-1].is_cheated and game.cards[i][-2].type.value == col[-1].type.value + 1:
+                    moves.append((i, 0, des, False))
+            continue
+        last = CardType(col[-1].type.value + 1)
+        for d, card in enumerate(reversed(col)):
+            if card.type.value + 1 != last.value:
+                break
+            for des in range(0, 6):
+                if des != i and (len(game.cards[des]) == 0 or not game.cards[des][-1].is_cheated):
+                    if len(game.cards[des]) == 0 or game.cards[des][-1].type.value == card.type.value + 1:
+                        moves.insert(0, (i, d, des, False))
+                    else:
+                        moves.append((i, d, des, True))
     return moves
 
 
@@ -30,13 +47,14 @@ def is_solved(game: Game) -> bool:
     return True
 
 
-def loop(game: Game, bac_moves: list[(int, int, int, int)]) -> (list[(int, int, int, int)], bool):
+def loop(game: Game, bac_moves: list[(int, int, int, bool)]) -> (list[(int, int, int, bool)], bool):
     if hash(game) in cache:
         return [], False
     cache[hash(game)] = True
     if is_solved(game):
         return bac_moves, True
     av_moves = get_possible_moves(game)
+    print(av_moves)
     if len(av_moves) == 0:
         return [], False
     # TODO
