@@ -1,9 +1,15 @@
+import copy
 from definitions import Game, Card, CardType
 
 cache = {}
 
 
-# TODO
+def move_card(game:Game, move:(int, int, int, bool)) -> Game:
+    new_game = copy.deepcopy(game)
+    #TODO
+    return new_game
+
+
 def get_possible_moves(game: Game) -> list[(int, int, int, bool)]:
     moves = []
     for i, col in enumerate(game.cards):
@@ -11,19 +17,20 @@ def get_possible_moves(game: Game) -> list[(int, int, int, bool)]:
             continue
         if col[-1].is_cheated:
             for des in range(0, 6):
-                if des != i and not game.cards[i][-1].is_cheated and game.cards[i][-2].type.value == col[-1].type.value + 1:
-                    moves.append((i, 0, des, False))
+                if des != i and (len(game.cards[des]) == 0 or (game.cards[des][-1].type.value == col[-1].type.value + 1 and not game.cards[des][-1].is_cheated)):
+                    moves.insert(0,(i, 0, des, False))
             continue
-        last = CardType(col[-1].type.value + 1)
+        last = CardType(col[-1].type.value - 1)
         for d, card in enumerate(reversed(col)):
-            if card.type.value + 1 != last.value:
+            if card.type.value != last.value + 1:
                 break
             for des in range(0, 6):
                 if des != i and (len(game.cards[des]) == 0 or not game.cards[des][-1].is_cheated):
                     if len(game.cards[des]) == 0 or game.cards[des][-1].type.value == card.type.value + 1:
                         moves.insert(0, (i, d, des, False))
-                    else:
+                    elif d == 0:
                         moves.append((i, d, des, True))
+            last = card.type
     return moves
 
 
@@ -52,36 +59,42 @@ def loop(game: Game, bac_moves: list[(int, int, int, bool)]) -> (list[(int, int,
         return [], False
     cache[hash(game)] = True
     if is_solved(game):
+        print(bac_moves)
+        print(game)
         return bac_moves, True
     av_moves = get_possible_moves(game)
-    print(av_moves)
     if len(av_moves) == 0:
         return [], False
-    # TODO
     for move in av_moves:
-        pass
+        print(bac_moves+[move])
+        if loop(move_card(game,move),bac_moves+[move])[1]:
+            return bac_moves, True
+    print("huj")
+    return [], False
 
 
 def solve(game: Game):
     cache.clear()
-    loop(game, [])
-    print(is_solved(game))
-    print(sample_game)
+    print(game)
+    print(loop(game, []))
+
 
 
 if __name__ == "__main__":
     sample_game = Game()
     sample_game.add_card(Card(CardType.T_THING), 2)
     sample_game.add_card(Card(CardType.T_THING), 2)
-    sample_game.add_card(Card(CardType["QUEEN"]), 2)
+    sample_game.add_card(Card(CardType["QUEEN"]), 4)
 
+
+    sample_game.add_card(Card(CardType.KING), 1)
+    sample_game.add_card(Card(CardType.KING), 1)
     sample_game.add_card(Card(CardType["QUEEN"]), 1)
-    sample_game.add_card(Card(CardType.KING), 1)
-    sample_game.add_card(Card(CardType.KING), 1)
-
     sample_game.add_card(Card(CardType.T_THING), 0)
     sample_game.add_card(Card(CardType.KING), 0)
-    sample_game.add_card(Card(CardType.QUEEN), 0)
+    sample_game.add_card(Card(CardType.QUEEN), 3)
     sample_game.last_card = CardType.QUEEN
+    sample_game.cards[4][0].is_cheated = True
+    sample_game.cards[3][0].is_cheated = True
     print(sample_game)
     solve(sample_game)

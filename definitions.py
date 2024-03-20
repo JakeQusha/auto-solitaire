@@ -26,7 +26,7 @@ class Game:
         self.last_card = CardType.SIX
 
     def __str__(self):
-        return '\n'.join([' '.join([str(card.type) for card in row]) for row in self.cards])
+        return '\n'.join([f"{i}: "+' '.join([str(card.type)[9:]+(' C |' if card.is_cheated else ' |') for card in row]) for i,row in enumerate(self.cards)])
 
 
 class Config:
