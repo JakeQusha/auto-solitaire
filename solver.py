@@ -4,10 +4,6 @@ from definitions import Game, Card, CardType
 
 cache = {}
 sys.setrecursionlimit(306385)
-#TODO
-#no kurwa niezle te ukadanie za pelne stosy
-#wyjebywanie rochow z usytego na puste
-#kolorki
 
 def move_card(game: Game, move: (int, int, int, bool)) -> Game:
     new_game = copy.deepcopy(game)
@@ -29,12 +25,14 @@ def get_possible_moves(game: Game) -> list[(int, int, int, bool)]:
                     -1].is_cheated)):
                     moves.insert(0, (i, 0, des, False))
             continue
+        if col[0].type == CardType.FULL:
+            continue
         last = CardType(col[-1].type.value - 1)
         for d, card in enumerate(reversed(col)):
             if card.type.value != last.value + 1:
                 break
             for des in range(0, 6):
-                if des != i and ((len(game.cards[des]) == 0 or game.cards[des][0].type != CardType.FULL) or (game.cards[des][0].type != CardType.FULL and not game.cards[des][-1].is_cheated)):
+                if des != i and ((len(game.cards[des]) == 0) or (game.cards[des][0].type != CardType.FULL and not game.cards[des][-1].is_cheated and game.cards[des][0].type != CardType.FULL)):
                     if len(game.cards[des]) == 0 or game.cards[des][-1].type.value == card.type.value + 1:
                         moves.insert(0, (i, d, des, False))
                     elif d == 0:
@@ -44,29 +42,37 @@ def get_possible_moves(game: Game) -> list[(int, int, int, bool)]:
 
 
 def is_solved(game: Game) -> bool:
+    flag = True
     for col in game.cards:
+        iflag = False
         if len(col) == 0:
             continue
         last = col[0].type
         if last == CardType.FULL:
             continue
         if last != CardType.T_THING:
-            return False
+            flag = False
+            continue
         last = CardType.FULL
         for c in col:
             if c.type.value + 1 != last.value:
-                return False
+                flag = False
+                iflag = True
+                break
             last = c.type
+        if iflag:
+            continue
         if last != game.last_card:
-            return False
+            flag = False
+            continue
         col[0].type = CardType.FULL
-    return True
+    return flag
 
 
 def loop(game: Game, bac_moves: list[(int, int, int, bool)]) -> (list[(int, int, int, bool)], bool):
-    if hash(game) in cache:
+    if game.gethash() in cache:
         return [], False
-    cache[hash(game)] = True
+    cache[game.gethash()] = True
     if is_solved(game):
         #print(bac_moves)
         print(game)
@@ -88,8 +94,8 @@ def solve(game: Game):
 
 if __name__ == "__main__":
     sample_game = Game()
-    #sample_game.add_card(Card(CardType.TEN), 5)
-    #sample_game.add_card(Card(CardType.TEN), 5)
+    sample_game.add_card(Card(CardType.TEN), 5)
+    sample_game.add_card(Card(CardType.TEN), 5)
     sample_game.add_card(Card(CardType.T_THING), 2)
     sample_game.add_card(Card(CardType.T_THING), 2)
     sample_game.add_card(Card(CardType["QUEEN"]), 4)
@@ -103,13 +109,13 @@ if __name__ == "__main__":
     sample_game.add_card(Card(CardType.JACK), 3)
     sample_game.add_card(Card(CardType.JACK), 5)
     sample_game.add_card(Card(CardType.JACK), 1)
-    #sample_game.add_card(Card(CardType.TEN), 2)
+    sample_game.add_card(Card(CardType.TEN), 2)
     sample_game.add_card(Card(CardType.T_THING), 2)
-    sample_game.add_card(Card(CardType.KING), 3)
+    sample_game.add_card(Card(CardType.KING), 5)
     sample_game.add_card(Card(CardType.QUEEN), 4)
     sample_game.add_card(Card(CardType.JACK), 5)
-    #sample_game.add_card(Card(CardType.TEN), 1)
+    sample_game.add_card(Card(CardType.TEN), 1)
 
-    sample_game.last_card = CardType.JACK
+    sample_game.last_card = CardType.TEN
     print(sample_game, '\n')
     solve(sample_game)

@@ -3,6 +3,7 @@ import json
 from dataclasses import dataclass
 from enum import Enum
 
+
 class CardType(Enum):
     scam, SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING, T_THING, FULL = range(11)
 
@@ -19,6 +20,7 @@ class Card:
 class Game:
     cards: list[list[Card]]
     last_card: CardType
+
     def add_card(self, card: Card, col: int):
         self.cards[col].append(card)
 
@@ -27,10 +29,17 @@ class Game:
         self.last_card = CardType.SIX
 
     def __str__(self):
-        return '\n'.join([f"{i}: "+' '.join([str(card.type)[9:]+(' C |' if card.is_cheated else ' |') for card in row]) for i,row in enumerate(self.cards)])
+        return self.gethash() + '\n' + '\n'.join(
+            [f"{i}: " + ' '.join([str(card.type)[9:] + (' C |' if card.is_cheated else ' |') for card in row]) for
+             i, row in enumerate(self.cards)])
 
-    def __hash__(self):
-        return hash(str(self))
+    # def __str__(self):
+    #     return '\n'.join([f"{i}: "+' '.join([str(card.type)[9:]+(' C |' if card.is_cheated else ' |') for card in row]) for i,row in enumerate(self.cards)])
+
+    def gethash(self):
+        return ''.join(sorted([''.join(
+            [str(card.type.value if card.type != CardType.FULL else 9) + ('19' if card.is_cheated else '') for card in
+             row]) + ';' for row in self.cards]))
 
 
 class Config:
