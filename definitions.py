@@ -1,9 +1,10 @@
+import hashlib
 import json
 from dataclasses import dataclass
 from enum import Enum
 
 class CardType(Enum):
-    SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING, T_THING, FULL = range(10)
+    scam, SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING, T_THING, FULL = range(11)
 
 
 class Card:
@@ -27,6 +28,9 @@ class Game:
 
     def __str__(self):
         return '\n'.join([f"{i}: "+' '.join([str(card.type)[9:]+(' C |' if card.is_cheated else ' |') for card in row]) for i,row in enumerate(self.cards)])
+
+    def __hash__(self):
+        return hash(str(self))
 
 
 class Config:

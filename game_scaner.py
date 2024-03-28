@@ -58,5 +58,5 @@ def make_board(config: Config) -> Game:
         for row in range(0, 6):
             print(
                 f'col: {col} , row: {row}: {game.cards[col][row].type}')
-    draw_game.show()
+   # draw_game.show()
     return game
