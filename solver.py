@@ -87,12 +87,13 @@ def loop(game: Game, bac_moves: list[(int, int, int, bool)]) -> (list[(int, int,
     return [], False
 
 
-def solve(game: Game):
+def solve(game: Game)-> (list[(int, int, int, bool)], bool):
     cache.clear()
-    print(loop(game, []))
+    return loop(game, [])
 
 
 if __name__ == "__main__":
+    # Test ゲーム
     sample_game = Game()
     sample_game.add_card(Card(CardType.TEN), 5)
     sample_game.add_card(Card(CardType.TEN), 5)

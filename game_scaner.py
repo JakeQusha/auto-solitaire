@@ -41,22 +41,31 @@ def get_card(image: Image, x: int, y: int) -> Card:
     return Card(CardType.EIGHT)
 
 
-def make_board(config: Config) -> Game:
+def make_board(config: Config, dbg=False) -> Game:
     pil_img = ImageGrab.grab(all_screens=False, xdisplay=None)
     width, height = pil_img.size
     game_img = pil_img.crop(config.get_corrected_offsets(width, height))
-    draw_game = copy.deepcopy(game_img)
-    draw = ImageDraw.Draw(draw_game)
+    if dbg:
+        draw_game = copy.deepcopy(game_img)
+        draw = ImageDraw.Draw(draw_game)
     game = Game()
     for col in range(0, 6):
         for row in range(0, 6):
             x = 8 + (164 * col)
             y = 8 + (32 * row)
             game.add_card(get_card(game_img, x, y), col)
-            draw.rectangle((x, y, x + 22, y + 18), None, '#e51212', 1)
-    for col in range(0, 6):
-        for row in range(0, 6):
-            print(
-                f'col: {col} , row: {row}: {game.cards[col][row].type}')
-   # draw_game.show()
+            if dbg:
+                draw.rectangle((x, y, x + 22, y + 18), None, '#e51212', 1)
+    if dbg:
+        for col in range(0, 6):
+            for row in range(0, 6):
+                print(f'col: {col} , row: {row}: {game.cards[col][row].type}')
+        draw.rectangle(config.get_corrected_offsets(width, height), None, '#e11212', 1)
+        draw_game.show()
     return game
+
+
+if __name__ == "__main__":
+    config = Config('config.json')
+    print(config)
+    make_board(config, True)
