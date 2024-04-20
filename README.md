@@ -2,6 +2,9 @@
 
 MOLEK-SYNTEZ solitaire solver written in python.
 
+## SHOWCASE
+https://github.com/JakeQusha/auto-solitaire/assets/79422805/e6946b5d-f08b-47c8-9336-25c802664603
+
 ## What works
 - Capturing screen with game*
 - Solving**
