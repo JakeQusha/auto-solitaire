@@ -1,7 +1,7 @@
 import copy
 
 from PIL import ImageGrab, ImageDraw, Image
-from definitions import Config, CardType, Card, Game
+from src.definitions import Config, CardType, Card, Game
 
 
 def check_pixel_white(image: Image, x: int, y: int) -> bool:
@@ -66,6 +66,6 @@ def make_board(config: Config, dbg=False) -> Game:
 
 
 if __name__ == "__main__":
-    config = Config('config.json')
+    config = Config('../config.json')
     print(config)
     make_board(config, True)

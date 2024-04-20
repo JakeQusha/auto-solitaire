@@ -3,7 +3,7 @@ from enum import Enum
 
 
 class CardType(Enum):
-    scam, SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING, T_THING, FULL = range(11)
+    TEMP, SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING, T_THING, FULL = range(11)
 
 
 class Card:

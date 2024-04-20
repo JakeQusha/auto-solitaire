@@ -1,14 +1,15 @@
 import copy
 import sys
-from definitions import Game, Card, CardType
+from src.definitions import Game, Card, CardType
 
 cache = {}
 sys.setrecursionlimit(306385)
 
+
 def move_card(game: Game, move: (int, int, int, bool)) -> Game:
     new_game = copy.deepcopy(game)
-    new_game.cards[move[2]].extend(new_game.cards[move[0]][-(move[1]+1):])
-    new_game.cards[move[0]] = new_game.cards[move[0]][:-(move[1]+1)]
+    new_game.cards[move[2]].extend(new_game.cards[move[0]][-(move[1] + 1):])
+    new_game.cards[move[0]] = new_game.cards[move[0]][:-(move[1] + 1)]
     new_game.cards[move[2]][-1].is_cheated = move[3]
     return new_game
 
@@ -32,7 +33,9 @@ def get_possible_moves(game: Game) -> list[(int, int, int, bool)]:
             if card.type.value != last.value + 1:
                 break
             for des in range(0, 6):
-                if des != i and ((len(game.cards[des]) == 0) or (game.cards[des][0].type != CardType.FULL and not game.cards[des][-1].is_cheated and game.cards[des][0].type != CardType.FULL)):
+                if des != i and ((len(game.cards[des]) == 0) or (
+                        game.cards[des][0].type != CardType.FULL and not game.cards[des][-1].is_cheated and
+                        game.cards[des][0].type != CardType.FULL)):
                     if len(game.cards[des]) == 0 or game.cards[des][-1].type.value == card.type.value + 1:
                         moves.insert(0, (i, d, des, False))
                     elif d == 0:
@@ -74,20 +77,20 @@ def loop(game: Game, bac_moves: list[(int, int, int, bool)]) -> (list[(int, int,
         return [], False
     cache[game.gethash()] = True
     if is_solved(game):
-        #print(bac_moves)
+        # print(bac_moves)
         print(game)
         return bac_moves, True
     av_moves = get_possible_moves(game)
     if len(av_moves) == 0:
         return [], False
     for move in av_moves:
-        huj = loop(move_card(game, move), bac_moves + [move])
-        if huj[1]:
-            return huj
+        res = loop(move_card(game, move), bac_moves + [move])
+        if res[1]:
+            return res
     return [], False
 
 
-def solve(game: Game)-> (list[(int, int, int, bool)], bool):
+def solve(game: Game) -> (list[(int, int, int, bool)], bool):
     cache.clear()
     return loop(game, [])
 

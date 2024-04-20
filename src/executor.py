@@ -1,7 +1,5 @@
-from time import sleep
-
 import pyautogui as p
-from definitions import Config
+from src.definitions import Config
 
 MAGIC_NUMBER = 10
 
@@ -20,8 +18,8 @@ def execute(moves: list[(int, int, int, bool)], config: Config):
     p.click(duration=0.2)
     for move in moves:
         cmove = get_loc(config, stosik_size, move[0:3])
-        stosik_size[move[0]] -= move[1]+1
-        stosik_size[move[2]] += move[1]+1
+        stosik_size[move[0]] -= move[1] + 1
+        stosik_size[move[2]] += move[1] + 1
         p.moveTo(cmove[0:2])
         p.dragTo(duration=.2)
         p.moveTo(cmove[2:])
@@ -29,6 +27,7 @@ def execute(moves: list[(int, int, int, bool)], config: Config):
 
 
 if __name__ == "__main__":
-    config = Config('config.json')
-    moves = [(4, 0, 0, False), (1, 2, 4, False), (4, 2, 3, False), (3, 0, 5, False), (5, 0, 1, False), (3, 1, 4, False), (1, 0, 5, False), (0, 1, 2, False)]
+    config = Config('../config.json')
+    moves = [(4, 0, 0, False), (1, 2, 4, False), (4, 2, 3, False), (3, 0, 5, False), (5, 0, 1, False), (3, 1, 4, False),
+             (1, 0, 5, False), (0, 1, 2, False)]
     execute(moves, config)
