@@ -11,11 +11,11 @@ https://github.com/JakeQusha/auto-solitaire/assets/79422805/e6946b5d-f08b-47c8-9
 - Executing generated solution*
 
 ##### *All screens must be same resolution (preferably 1080p)
-##### **Generated solutions have about 100-400 moves which is quite a lot
+##### **Generated solutions have about 100-400 moves
 
 ## What needs to be done
 - Rework solving process to find best solution instead of first solver stumbles upon.
-- add support for setups with different screen resolution configuration.
+- Add support for setups with different screen resolution configuration.
 
 ## Installation and Use
 - install pyautogui and pillow.
